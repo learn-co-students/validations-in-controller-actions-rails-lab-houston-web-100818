@@ -1,15 +1,22 @@
 class AuthorsController < ApplicationController
-  def show
-    @author = Author.find(params[:id])
-  end
+  before_action :set_author
 
-  def new
-  end
+  def set_author
+    if params[:id]
+      @author = Author.find(params[:id])
+    else 
+      @author = Author.new
+    end 
+  end 
 
   def create
-    @author = Author.create!(author_params)
-
-    redirect_to author_path(@author)
+    @author = Author.new(author_params)
+    if @author.valid?
+      @author.save 
+      redirect_to author_path(@author)
+    else 
+      render :new
+    end
   end
 
   private
